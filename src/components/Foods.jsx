@@ -1,14 +1,25 @@
 import React, { Component } from "react";
 import { getFoods } from "../services/fakeFoodService";
+import { getCategories } from "../services/fakeCategoryService";
 import Favorite from "./common/Favorite";
 import Pagination from "./common/Pagination";
+import ListGroup from "./common/ListGroup";
+
+const DEFAULT_CATEGORY = { _id: "", name: "All categories" };
 
 class Foods extends Component {
   state = {
-    foods: getFoods(),
+    foods: [],
+    categories: [],
     pageSize: 4,
     selectedPage: 1,
+    selectedCategory: DEFAULT_CATEGORY,
   };
+
+  componentDidMount() {
+    const categories = [DEFAULT_CATEGORY, ...getCategories()];
+    this.setState({ foods: getFoods(), categories });
+  }
 
   handleFavor = (food) => {
     const foods = [...this.state.foods];
@@ -18,19 +29,26 @@ class Foods extends Component {
     this.setState({ foods });
   };
 
-  handlePageChange = (page) => {
-    this.setState({ selectedPage: page });
-  };
+  handlePageChange = (page) => this.setState({ selectedPage: page });
+
+  handleCategorySelect = (category) =>
+    this.setState({ selectedCategory: category });
 
   render() {
+    const { pageSize, selectedPage, selectedCategory, categories } = this.state;
     const { length: count } = this.state.foods;
-    const { pageSize, selectedPage } = this.state;
 
     if (count === 0) return <p>There are no foods in the database</p>;
 
     return (
-      <div className="row">
-        <div className="col-2"></div>
+      <div className="row mt-4">
+        <div className="col-2">
+          <ListGroup
+            items={categories}
+            selectedItem={selectedCategory}
+            onItemSelect={this.handleCategorySelect}
+          />
+        </div>
         <div className="col">
           <p>Showing {count} foods in the database</p>
           <table className="table">
@@ -76,7 +94,6 @@ class Foods extends Component {
             onPageChange={this.handlePageChange}
           />
         </div>
-        {<p className="badge bg-dark">hej</p>}
       </div>
     );
   }
