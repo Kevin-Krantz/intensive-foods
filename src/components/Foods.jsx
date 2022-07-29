@@ -4,6 +4,7 @@ import { getCategories } from "../services/fakeCategoryService";
 import Favorite from "./common/Favorite";
 import Pagination from "./common/Pagination";
 import ListGroup from "./common/ListGroup";
+import { Paginate } from "../utils/paginate";
 
 const DEFAULT_CATEGORY = { _id: "", name: "All categories" };
 
@@ -35,10 +36,18 @@ class Foods extends Component {
     this.setState({ selectedCategory: category });
 
   render() {
-    const { pageSize, selectedPage, selectedCategory, categories } = this.state;
-    const { length: count } = this.state.foods;
+    const {
+      pageSize,
+      selectedPage,
+      selectedCategory,
+      categories,
+      foods: allFoods,
+    } = this.state;
+    const { length: count } = allFoods;
 
     if (count === 0) return <p>There are no foods in the database</p>;
+
+    const foods = Paginate(allFoods, selectedPage, pageSize);
 
     return (
       <div className="row mt-4">
