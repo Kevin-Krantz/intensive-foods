@@ -1,10 +1,10 @@
 import React, { Component } from "react";
 import { getFoods } from "../services/fakeFoodService";
 import { getCategories } from "../services/fakeCategoryService";
-import Favorite from "./common/Favorite";
-import Pagination from "./common/Pagination";
 import ListGroup from "./common/ListGroup";
+import Pagination from "./common/Pagination";
 import { Paginate } from "../utils/paginate";
+import FoodsTable from "./FoodsTable";
 
 const DEFAULT_CATEGORY = { _id: "", name: "All categories" };
 
@@ -64,42 +64,11 @@ class Foods extends Component {
         </div>
         <div className="col">
           <p>Showing {filteredFoods.length} foods in the database</p>
-          <table className="table">
-            <thead>
-              <tr>
-                <th>Name</th>
-                <th>Category</th>
-                <th>Stock</th>
-                <th>Price</th>
-                <th />
-                <th />
-              </tr>
-            </thead>
-            <tbody>
-              {foods.map((food) => (
-                <tr key={food._id}>
-                  <td>{food.name}</td>
-                  <td>{food.category.name}</td>
-                  <td>{food.numberInStock}</td>
-                  <td>{food.price}</td>
-                  <td>
-                    <Favorite
-                      onFavor={() => this.handleFavor(food)}
-                      isFavorite={food.isFavorite}
-                    />
-                  </td>
-                  <td>
-                    <button
-                      onClick={() => this.handleDetelete(food)}
-                      className="btn btn-danger"
-                    >
-                      Delete
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+          <FoodsTable
+            foods={foods}
+            onFavor={this.handleFavor}
+            onDelete={this.handleDelete}
+          />
           <Pagination
             itemCount={filteredFoods.length}
             pageSize={pageSize}
@@ -111,7 +80,7 @@ class Foods extends Component {
     );
   }
 
-  handleDetelete = (food) => {
+  handleDelete = (food) => {
     const foods = this.state.foods.filter((f) => f._id !== food._id);
     this.setState({ foods });
   };
