@@ -33,7 +33,7 @@ class Foods extends Component {
   handlePageChange = (page) => this.setState({ selectedPage: page });
 
   handleCategorySelect = (category) =>
-    this.setState({ selectedCategory: category });
+    this.setState({ selectedCategory: category, selectedPage: 1 });
 
   render() {
     const {
@@ -47,7 +47,11 @@ class Foods extends Component {
 
     if (count === 0) return <p>There are no foods in the database</p>;
 
-    const foods = Paginate(allFoods, selectedPage, pageSize);
+    const filteredFoods = selectedCategory._id
+      ? allFoods.filter((f) => f.category._id === selectedCategory._id)
+      : allFoods;
+
+    const foods = Paginate(filteredFoods, selectedPage, pageSize);
 
     return (
       <div className="row mt-4">
@@ -59,7 +63,7 @@ class Foods extends Component {
           />
         </div>
         <div className="col">
-          <p>Showing {count} foods in the database</p>
+          <p>Showing {filteredFoods.length} foods in the database</p>
           <table className="table">
             <thead>
               <tr>
@@ -72,7 +76,7 @@ class Foods extends Component {
               </tr>
             </thead>
             <tbody>
-              {this.state.foods.map((food) => (
+              {foods.map((food) => (
                 <tr key={food._id}>
                   <td>{food.name}</td>
                   <td>{food.category.name}</td>
@@ -97,7 +101,7 @@ class Foods extends Component {
             </tbody>
           </table>
           <Pagination
-            itemCount={count}
+            itemCount={filteredFoods.length}
             pageSize={pageSize}
             selectedPage={selectedPage}
             onPageChange={this.handlePageChange}
