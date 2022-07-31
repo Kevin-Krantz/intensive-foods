@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import _ from "lodash";
 import { getFoods } from "../services/fakeFoodService";
 import { getCategories } from "../services/fakeCategoryService";
 import ListGroup from "./common/ListGroup";
@@ -15,6 +16,7 @@ class Foods extends Component {
     pageSize: 4,
     selectedPage: 1,
     selectedCategory: DEFAULT_CATEGORY,
+    sortColumn: { path: "name", order: "asc" },
   };
 
   componentDidMount() {
@@ -30,6 +32,18 @@ class Foods extends Component {
     this.setState({ foods });
   };
 
+  handleSort = (path) => {
+    const sortColumn = { ...this.state.sortColumn };
+
+    if (sortColumn.path === path) {
+      sortColumn.order = sortColumn.order === "asc" ? "desc" : "asc";
+    } else {
+      sortColumn.path = path;
+      sortColumn.order = "asc";
+    }
+    this.setState({ sortColumn });
+  };
+
   handlePageChange = (page) => this.setState({ selectedPage: page });
 
   handleCategorySelect = (category) =>
@@ -41,6 +55,7 @@ class Foods extends Component {
       selectedPage,
       selectedCategory,
       categories,
+      sortColumn,
       foods: allFoods,
     } = this.state;
     const { length: count } = allFoods;
@@ -51,7 +66,13 @@ class Foods extends Component {
       ? allFoods.filter((f) => f.category._id === selectedCategory._id)
       : allFoods;
 
-    const foods = Paginate(filteredFoods, selectedPage, pageSize);
+    const sortedFoods = _.orderBy(
+      filteredFoods,
+      [sortColumn.path],
+      [sortColumn.order]
+    );
+
+    const foods = Paginate(sortedFoods, selectedPage, pageSize);
 
     return (
       <div className="row mt-4">
@@ -68,6 +89,7 @@ class Foods extends Component {
             foods={foods}
             onFavor={this.handleFavor}
             onDelete={this.handleDelete}
+            onSort={this.handleSort}
           />
           <Pagination
             itemCount={filteredFoods.length}

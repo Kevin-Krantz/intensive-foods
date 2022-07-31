@@ -1,15 +1,16 @@
 import React from "react";
 import Favorite from "./common/Favorite";
 
-function FoodsTable({ foods, onFavor, onDelete }) {
+function FoodsTable({ foods, onFavor, onDelete, onSort }) {
   return (
     <table className="table">
       <thead>
         <tr>
-          <th>Name</th>
-          <th>Category</th>
-          <th>Stock</th>
-          <th>Price</th>
+          <th onClick={() => onSort("name")}>Name</th>
+          <th onClick={() => onSort("category.name")}>Category</th>
+          <th onClick={() => onSort("numberInStock")}>Stock</th>
+          <th onClick={() => onSort("price")}>Price</th>
+          <th />
           <th />
         </tr>
       </thead>
