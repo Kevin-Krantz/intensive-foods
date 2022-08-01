@@ -32,17 +32,7 @@ class Foods extends Component {
     this.setState({ foods });
   };
 
-  handleSort = (path) => {
-    const sortColumn = { ...this.state.sortColumn };
-
-    if (sortColumn.path === path) {
-      sortColumn.order = sortColumn.order === "asc" ? "desc" : "asc";
-    } else {
-      sortColumn.path = path;
-      sortColumn.order = "asc";
-    }
-    this.setState({ sortColumn });
-  };
+  handleSort = (sortColumn) => this.setState({ sortColumn });
 
   handlePageChange = (page) => this.setState({ selectedPage: page });
 
@@ -90,6 +80,7 @@ class Foods extends Component {
             onFavor={this.handleFavor}
             onDelete={this.handleDelete}
             onSort={this.handleSort}
+            sortColumn={sortColumn}
           />
           <Pagination
             itemCount={filteredFoods.length}
