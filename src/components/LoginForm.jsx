@@ -1,67 +1,29 @@
-import React, { Component } from "react";
+import React from "react";
 import _ from "lodash";
-import Input from "./common/Input";
+import Joi from "joi";
+import Form from "./common/Form";
 
-class LoginForm extends Component {
+class LoginForm extends Form {
   state = {
-    account: { username: "", password: "" },
+    data: { username: "", password: "" },
     errors: {},
   };
 
-  validate() {
-    const errors = {};
-    const { username, password } = this.state.account;
+  schema = Joi.object({
+    username: Joi.string().required().min(2).label("Username"), // fluent API
+    password: Joi.string().required().min(4).label("Password"),
+  });
 
-    if (username === "") {
-      errors.username = "Username cannot be emty";
-    }
-
-    if (password === "") {
-      errors.password = "Password is required";
-    }
-
-    return errors;
-  }
-
-  validateProperty() {}
-
-  handleSubmit = (e) => {
-    e.preventDefault();
-
-    const errors = this.validate();
-    console.log(errors);
-    this.setState({ errors });
-    if (!_.isEmpty(errors)) return;
-
+  doSubmit = () => {
     console.log("LOGGA IN");
   };
 
-  handleChange = ({ target: input }) => {
-    const account = { ...this.state.account };
-    account[input.id] = input.value;
-    this.setState({ account });
-  };
-
   render() {
-    const { account, errors } = this.state;
-
     return (
       <form onSubmit={this.handleSubmit}>
-        <Input
-          name={"username"}
-          label={"Username"}
-          value={account.username}
-          error={errors.username}
-          onChange={this.handleChange}
-        />
-        <Input
-          name="password"
-          label="Password"
-          value={account.password}
-          error={errors.password}
-          onChange={this.handleChange}
-        />
-        <button className="btn btn-primary">Submit</button>
+        {this.renderInput("username", "Username")}
+        {this.renderInput("password", "Password")}
+        {this.renderbutton("Log in")}
       </form>
     );
   }

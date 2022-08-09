@@ -5,6 +5,7 @@ import LoginForm from "./components/LoginForm";
 import NavBar from "./NavBar";
 import Customers from "./components/Customers";
 import Orders from "./components/Orders";
+import FoodForm from "./components/FoodForm";
 import NotFound from "./components/NotFound";
 
 class App extends Component {
@@ -13,16 +14,12 @@ class App extends Component {
       <div className="container">
         <NavBar />
         <Switch>
-          <Route
-            exact
-            path="/"
-            render={(props, foods) => <Foods foods={foods} {...props} />}
-          />
+          <Route path="/food-form/:id" component={FoodForm} />
           <Route path="/customers" component={Customers} />
           <Route path="/orders" component={Orders} />
           <Route path="/login" component={LoginForm} />
           <Route path="/not-found" component={NotFound} />
-          <Redirect to="/not-found" />
+          <Route path="/" component={Foods} />
         </Switch>
       </div>
     );
