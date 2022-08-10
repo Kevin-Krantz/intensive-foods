@@ -17,8 +17,18 @@ function NavBar() {
           </NavLink>
         </li>
         <li className="nav-item">
-          <NavLink className="nav-link" to="orders">
+          <NavLink className="nav-link" to="/orders">
             Orders
+          </NavLink>
+        </li>
+        <li className="nav-item">
+          <NavLink className="nav-link" to="/login">
+            Log In
+          </NavLink>
+        </li>
+        <li className="nav-item">
+          <NavLink className="nav-link" to="/Register">
+            Register
           </NavLink>
         </li>
       </ul>
