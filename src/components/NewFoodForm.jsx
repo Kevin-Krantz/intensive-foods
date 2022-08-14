@@ -15,15 +15,18 @@ class NewFoodForm extends Form {
 
   componentDidMount() {
     const categories = [DEFAULT_CATEGORY, ...getCategories()];
-    this.state.categories = { DEFAULT_CATEGORY, ...categories };
     this.setState({ categories });
   }
 
   schema = Joi.object({
     name: Joi.string().required().min(2).label("Name"), // fluent API
     categoryId: Joi.string().required().label("Category"),
-    numberInStock: Joi.string().required().min(0).label("Stock"), // name category number in stock price
-    price: Joi.string().required().min(4).label("Price"),
+    numberInStock: Joi.number()
+      .required()
+      .min(0)
+      .max(100)
+      .label("Number in Stock"), // name category number in stock price
+    price: Joi.number().required().max(10).label("Price"),
   });
 
   doSubmit = () => {

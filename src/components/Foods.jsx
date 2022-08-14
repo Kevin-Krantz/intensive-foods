@@ -92,6 +92,9 @@ class Foods extends Component {
             New Food
           </Link>
           <p>Showing {filteredCount} foods in the database</p>
+          <div className="input-group flex-nowrap">
+            <input className="form-control" placeholder="Search food" />
+          </div>
           <FoodsTable
             foods={foods}
             onFavor={this.handleFavor}
