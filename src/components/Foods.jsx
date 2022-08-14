@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import _ from "lodash";
 import { getFoods } from "../services/fakeFoodService";
 import { getCategories } from "../services/fakeCategoryService";
+import { Link } from "react-router-dom";
 import ListGroup from "./common/ListGroup";
 import Pagination from "./common/Pagination";
 import { Paginate } from "../utils/paginate";
@@ -87,6 +88,9 @@ class Foods extends Component {
           />
         </div>
         <div className="col">
+          <Link to="/foods/new" className="btn btn-primary">
+            New Food
+          </Link>
           <p>Showing {filteredCount} foods in the database</p>
           <FoodsTable
             foods={foods}

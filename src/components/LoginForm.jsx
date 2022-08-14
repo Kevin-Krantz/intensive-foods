@@ -9,8 +9,9 @@ class LoginForm extends Form {
   };
 
   schema = Joi.object({
+    // här deklarerar jag Joi schema.
     username: Joi.string().required().min(2).label("Username"), // fluent API
-    password: Joi.string().required().min(4).label("Password"),
+    password: Joi.string().required().min(4).label("Password"), // username och password har en context.key som ligger i detail objektet.
   });
 
   doSubmit = () => {
