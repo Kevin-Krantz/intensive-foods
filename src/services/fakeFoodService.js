@@ -84,7 +84,7 @@ export function saveFood(food) {
   foodInDb.price = food.price;
 
   if (!foodInDb._id) {
-    foodInDb._id = Date.now();
+    foodInDb._id = Date.now().toString();
     foods.push(foodInDb);
   }
 

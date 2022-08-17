@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import _ from "lodash";
-import { getFoods } from "../services/fakeFoodService";
+import { deleteFood, getFoods } from "../services/fakeFoodService";
 import { getCategories } from "../services/fakeCategoryService";
 import { Link } from "react-router-dom";
 import ListGroup from "./common/ListGroup";
@@ -31,6 +31,12 @@ class Foods extends Component {
     foods[index] = { ...food };
     foods[index].isFavorite = !foods[index].isFavorite;
     this.setState({ foods });
+  };
+
+  handleDelete = (food) => {
+    const foods = this.state.foods.filter((f) => f._id !== food._id);
+    this.setState({ foods });
+    deleteFood(food._id);
   };
 
   handleSort = (sortColumn) => this.setState({ sortColumn });
@@ -88,11 +94,11 @@ class Foods extends Component {
           />
         </div>
         <div className="col">
-          <Link to="/foods/new" className="btn btn-primary">
+          <Link to="/foods/new" className="btn btn-primary mb-3">
             New Food
           </Link>
           <p>Showing {filteredCount} foods in the database</p>
-          <div className="input-group flex-nowrap">
+          <div>
             <input className="form-control" placeholder="Search food" />
           </div>
           <FoodsTable
@@ -112,11 +118,6 @@ class Foods extends Component {
       </div>
     );
   }
-
-  handleDelete = (food) => {
-    const foods = this.state.foods.filter((f) => f._id !== food._id);
-    this.setState({ foods });
-  };
 }
 
 export default Foods;

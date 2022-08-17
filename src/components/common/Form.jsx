@@ -61,14 +61,14 @@ class Form extends Component {
     );
   }
 
-  renderDropDown(name, label, categories) {
+  renderInput(name, label, type = "text") {
     const { data, errors } = this.state;
 
     return (
-      <DropDown
-        categories={categories}
+      <Input
         name={name}
         label={label}
+        type={type}
         value={data[name]}
         error={errors[name]}
         onChange={this.handleChange}
@@ -76,13 +76,14 @@ class Form extends Component {
     );
   }
 
-  renderInput(name, label) {
+  renderDropDown(name, label, options, placeholder = "") {
     const { data, errors } = this.state;
-
     return (
-      <Input
+      <DropDown
         name={name}
         label={label}
+        options={options}
+        placeholder={placeholder}
         value={data[name]}
         error={errors[name]}
         onChange={this.handleChange}

@@ -30,7 +30,7 @@ class NewFoodForm extends Form {
   });
 
   doSubmit = () => {
-    console.log("LOGGA IN");
+    console.log("Saving food");
   };
 
   render() {
