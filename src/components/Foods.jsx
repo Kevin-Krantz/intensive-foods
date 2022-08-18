@@ -2,11 +2,12 @@ import React, { Component } from "react";
 import _ from "lodash";
 import { deleteFood, getFoods } from "../services/fakeFoodService";
 import { getCategories } from "../services/fakeCategoryService";
-import { Link } from "react-router-dom";
 import ListGroup from "./common/ListGroup";
 import Pagination from "./common/Pagination";
+import SearchBox from "./common/SearchBox";
 import { Paginate } from "../utils/paginate";
 import FoodsTable from "./FoodsTable";
+import { Link } from "react-router-dom";
 
 const DEFAULT_CATEGORY = { _id: "", name: "All categories" };
 
@@ -16,6 +17,7 @@ class Foods extends Component {
     categories: [],
     pageSize: 4,
     selectedPage: 1,
+    searchQuery: "",
     selectedCategory: DEFAULT_CATEGORY,
     sortColumn: { path: "name", order: "asc" },
   };
@@ -39,24 +41,41 @@ class Foods extends Component {
     deleteFood(food._id);
   };
 
+  handleSearch = (searchQuery) =>
+    this.setState({ searchQuery, selectedCategory: DEFAULT_CATEGORY });
+
   handleSort = (sortColumn) => this.setState({ sortColumn });
 
   handlePageChange = (page) => this.setState({ selectedPage: page });
 
   handleCategorySelect = (category) =>
-    this.setState({ selectedCategory: category, selectedPage: 1 });
+    this.setState({
+      selectedCategory: category,
+      selectedPage: 1,
+      searchQuery: "",
+    });
 
   getPaginatedFoods() {
     const {
       pageSize,
       selectedPage,
+      searchQuery,
       selectedCategory,
       sortColumn,
       foods: allFoods,
     } = this.state;
-    const filteredFoods = selectedCategory._id
-      ? allFoods.filter((f) => f.category._id === selectedCategory._id)
-      : allFoods;
+
+    let filteredFoods = allFoods;
+
+    if (selectedCategory._id) {
+      filteredFoods = allFoods.filter(
+        (f) => f.category._id === selectedCategory._id
+      );
+    } else if (searchQuery) {
+      filteredFoods = allFoods.filter((f) =>
+        f.name.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+    }
 
     const sortedFoods = _.orderBy(
       filteredFoods,
@@ -74,6 +93,7 @@ class Foods extends Component {
       pageSize,
       selectedPage,
       selectedCategory,
+      searchQuery,
       categories,
       sortColumn,
       foods: allFoods,
@@ -98,9 +118,7 @@ class Foods extends Component {
             New Food
           </Link>
           <p>Showing {filteredCount} foods in the database</p>
-          <div>
-            <input className="form-control" placeholder="Search food" />
-          </div>
+          <SearchBox value={searchQuery} onChange={this.handleSearch} />
           <FoodsTable
             foods={foods}
             onFavor={this.handleFavor}
