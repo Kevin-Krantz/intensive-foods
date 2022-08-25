@@ -1,14 +1,15 @@
 import React, { Component } from "react";
 import _ from "lodash";
-import { deleteFood, getFoods } from "../services/fakeFoodService";
-import { getCategories } from "../services/fakeCategoryService";
+import { deleteFood, getFoods } from "../services/foodService";
+import { getCategories } from "../services/categoryService";
 import ListGroup from "./common/ListGroup";
 import Pagination from "./common/Pagination";
 import SearchBox from "./common/SearchBox";
 import { Paginate } from "../utils/paginate";
 import FoodsTable from "./FoodsTable";
 import { Link } from "react-router-dom";
-
+import { toast } from "react-toastify";
+import { log } from "../services/logService";
 const DEFAULT_CATEGORY = { _id: "", name: "All categories" };
 
 class Foods extends Component {
@@ -22,9 +23,11 @@ class Foods extends Component {
     sortColumn: { path: "name", order: "asc" },
   };
 
-  componentDidMount() {
-    const categories = [DEFAULT_CATEGORY, ...getCategories()];
-    this.setState({ foods: getFoods(), categories });
+  async componentDidMount() {
+    const dbFoods = await getFoods();
+    const dbCategories = await getCategories();
+    const categories = [DEFAULT_CATEGORY, ...dbCategories];
+    this.setState({ foods: dbFoods, categories });
   }
 
   handleFavor = (food) => {
@@ -35,10 +38,22 @@ class Foods extends Component {
     this.setState({ foods });
   };
 
-  handleDelete = (food) => {
+  handleDelete = async (food) => {
+    const originalFoods = this.state.foods;
+
     const foods = this.state.foods.filter((f) => f._id !== food._id);
     this.setState({ foods });
-    deleteFood(food._id);
+
+    try {
+      await deleteFood(food._id);
+    } catch (error) {
+      if (error.response && error.response.status === 404) {
+        toast.error(error.message);
+        log(error);
+      }
+
+      this.setState({ foods: originalFoods });
+    }
   };
 
   handleSearch = (searchQuery) =>
@@ -114,12 +129,15 @@ class Foods extends Component {
           />
         </div>
         <div className="col">
-          <Link to="/foods/new" className="btn btn-primary mb-3">
-            New Food
-          </Link>
+          {this.props.user && (
+            <Link to="/foods/new" className="btn btn-primary mb-3">
+              New Food
+            </Link>
+          )}
           <p>Showing {filteredCount} foods in the database</p>
           <SearchBox value={searchQuery} onChange={this.handleSearch} />
           <FoodsTable
+            user={this.props.user}
             foods={foods}
             onFavor={this.handleFavor}
             onDelete={this.handleDelete}

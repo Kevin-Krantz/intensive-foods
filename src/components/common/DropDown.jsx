@@ -20,7 +20,6 @@ function DropDown({
         onChange={onChange}
         className="form-select"
       >
-        <option value="">{placeholder}</option>
         {options.map((option) => (
           <option key={option._id} value={option._id}>
             {option.name}

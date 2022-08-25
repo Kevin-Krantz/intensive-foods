@@ -1,8 +1,10 @@
 import Joi from "joi";
 import React from "react";
 import Form from "./common/Form";
-import { getCategories } from "../services/fakeCategoryService";
-import { getFood, saveFood } from "../services/fakeFoodService";
+import { getCategories } from "../services/categoryService";
+import { getFood, saveFood } from "../services/foodService";
+
+const DEFAULT_CATEGORY = { _id: "", name: "Select Category" };
 
 class FoodForm extends Form {
   state = {
@@ -19,14 +21,16 @@ class FoodForm extends Form {
     price: Joi.number().required().min(0).max(10).label("Price"),
   });
 
-  componentDidMount() {
-    const categories = getCategories();
+  async componentDidMount() {
+    const data = await getCategories();
+    const categories = [DEFAULT_CATEGORY, ...data];
+
     this.setState({ categories });
 
     const foodId = this.props.match.params.id;
     if (foodId === "new") return;
 
-    const food = getFood(foodId);
+    const food = await getFood(foodId);
     if (!food) return this.props.history.replace("/not-found");
 
     this.setState({ data: this.mapToViewModel(food) });

@@ -1,7 +1,7 @@
 import React from "react";
 import { Link, NavLink } from "react-router-dom";
 
-function NavBar() {
+function NavBar({ user }) {
   return (
     <nav className="navbar navbar-expand-lg navbar-light bg-light">
       <div className="container-fluid">
@@ -19,12 +19,26 @@ function NavBar() {
             <NavLink className="nav-link" to="/orders">
               Orders
             </NavLink>
-            <NavLink className="nav-link" to="/login">
-              Log In
-            </NavLink>
-            <NavLink className="nav-link" to="/register">
-              Register
-            </NavLink>
+            {!user && (
+              <>
+                <NavLink className="nav-link" to="/login">
+                  Log In
+                </NavLink>
+                <NavLink className="nav-link" to="/register">
+                  Register
+                </NavLink>
+              </>
+            )}
+            {user && (
+              <>
+                <NavLink className="nav-link" to="/profile">
+                  {user.name}
+                </NavLink>
+                <NavLink className="nav-link" to="/logout">
+                  Logout
+                </NavLink>
+              </>
+            )}
           </div>
         </div>
       </div>

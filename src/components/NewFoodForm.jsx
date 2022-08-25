@@ -1,7 +1,7 @@
 import React from "react";
 import Joi from "joi";
 import Form from "./common/Form";
-import { getCategories } from "../services/fakeCategoryService";
+import { getCategories } from "../services/categoryService";
 
 const DEFAULT_CATEGORY = { _id: "", name: "Select Category" };
 
